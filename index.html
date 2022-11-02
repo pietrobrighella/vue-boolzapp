@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app" class="vh-100">
+        <div id="wrapper" class="d-flex justify-content-center">
+
+            <!-- area selezione chat/utenti -->
+            <div class="user-area col-3 bg-white">
+                <div>
+                    <!-- header user account -->
+                    <div class="tab-header d-flex justify-content-between my-p">
+                        <div class="d-flex align-items-center">
+                            <div class="profile-small"><img src="./img/avatar_io.jpg" alt="io" class="w-100 rounded-circle"></div>
+                            <span class="px-3">Sofia</span>
+                        </div>
+                        <div class="list-unstyled d-flex align-items-center gap-4">
+                            <i class="fa-solid fa-circle-notch fs-5" role="button"></i>
+                            <i class="fa-solid fa-message fs-5" role="button"></i>
+                            <i class="fa-solid fa-ellipsis-vertical fs-5" role="button"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- alert -->
+                <div class="alert-notify d-flex align-items-center my-p">
+                    <span class="notify-icon rounded-circle">
+                        <i class="fa-solid fa-bell-slash"></i></span>
+                    <div class="d-flex flex-column">
+                        <span>Ricevi notifiche di nuovi messaggi</span>
+                        <span>Attiva notifiche desktop ></span>
+                    </div>
+                </div>
+                <!-- campo ricerca utenti -->
+                <div class="chat-search border-bottom">
+                    <div class="position-relative">
+                        <input type="text" class="form-control form-control-sm px-5" placeholder="Cerca o inizia una nuova chat">
+                        <i class="fa-solid fa-magnifying-glass input-icon-append"></i>
+                    </div>
+                </div>
+                <!-- area utenti e relative chat -->
+                <div class="chat-nav">
+                    <template v-for="(contact, index) in contacts" :key="index">
+                        <div class="user-chat d-flex align-items-center my-p position-relative border-bottom" :class="{'user-chat-active': contact.active}">
+                            <div class="profile-large"><img :src="`./img/avatar${contact.avatar}.jpg`" :alt="`${contact.name}`" class="w-100 rounded-circle"></div>
+                            <div class="d-flex flex-column p-3">
+                                <span class="fw-bold">{{contact.name}}</span>
+                                <span class="info-chat">{{lastMsg(index)}}</span>
+                            </div>
+                            <span class="user-chat-time">12:00</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- area chat -->
+            <div class="col-9 d-flex flex-column justify-content-between">
+                <!-- header area chat -->
+                <div>
+                    <div class="tab-header d-flex justify-content-between my-p">
+                        <div class="d-flex align-items-center">
+                            <div class="profile-small"><img src="./img/avatar_1.jpg" alt="Michele" class="w-100 rounded-circle"></div>
+                            <div class="d-flex flex-column px-3">
+                                <span>Michele</span>
+                                <span class="info-chat">Ultimo accesso oggi alle 12.00</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-4">
+                            <i class="fa-solid fa-magnifying-glass fs-5" role="button"></i>
+                            <i class="fa-solid fa-paperclip fs-5" role="button"></i>
+                            <i class="fa-solid fa-ellipsis-vertical fs-5" role="button"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- container area chat -->
+                <div class="h-100 p-5 chat-box d-flex flex-column">
+                    <div class="send p-3 my-2 position-relative align-self-end">
+                        <p>Hai portato a spasso il cane?</p>
+                        <span class="msg-chat-time">15:30</span>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <div class="send my-2 p-3 position-relative align-self-end">
+                        <p>Ricordati di stendere i panni</p>
+                        <span class="msg-chat-time">15:50</span>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <div class="received my-2 p-3 position-relative align-self-start">
+                        <p>Tutto fatto!</p>
+                        <span class="msg-chat-time">16:15</span>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                </div>
+                <!-- footer area chat -->
+                <div class="tab-footer my-p d-flex align-items-center justify-content-between">
+                    <i class="fa-regular fa-face-smile fs-3" role="button"></i>
+                    <span class="w-100 px-3"><input type="text" class="w-100 form-control form-control-lg fs-6" placeholder="Scrivi un messaggio"></span>
+                    <i class="fa-solid fa-paper-plane fs-3" role="button"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
