@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.1.0/build/global/luxon.min.js"></script>
     <link rel="stylesheet" href="./css/style.css">
     <title>Document</title>
 </head>
@@ -41,20 +42,21 @@
                 <!-- campo ricerca utenti -->
                 <div class="chat-search border-bottom">
                     <div class="position-relative">
-                        <input type="text" class="form-control form-control-sm px-5" placeholder="Cerca o inizia una nuova chat">
+                        <input v-model.trim="searchTerm" type="text" class="form-control form-control-sm px-5" placeholder="Cerca o inizia una nuova chat">
                         <i class="fa-solid fa-magnifying-glass input-icon-append"></i>
                     </div>
                 </div>
                 <!-- area utenti e relative chat -->
                 <div class="chat-nav">
-                    <template v-for="(contact, index) in contacts" :key="index">
-                        <div class="user-chat d-flex align-items-center my-p position-relative border-bottom" :class="{'user-chat-active': contact.active}">
-                            <div class="profile-large"><img :src="`./img/avatar${contact.avatar}.jpg`" :alt="`${contact.name}`" class="w-100 rounded-circle"></div>
+                    <!-- Nella key utilizzo l'id del contatto. In caso avessi la necessità di un ID tag html, ovviamente devo dare un id dinamico del tipo id="contatto_${item.id}" -->
+                    <template v-for="(item, index) in filteredContacts" :key="item.id">
+                        <div @click="getChat(item.id)" class="user-chat d-flex align-items-center my-p position-relative border-bottom" :class="{'user-chat-active': item.active}">
+                            <div class="profile-large"><img :src="`./img/avatar${item.avatar}.jpg`" :alt="`${item.name}`" class="w-100 rounded-circle"></div>
                             <div class="d-flex flex-column p-3">
-                                <span class="fw-bold">{{contact.name}}</span>
-                                <span class="info-chat">{{lastMsg(index)}}</span>
+                                <span class="fw-bold">{{item.name}}</span>
+                                <span class="info-chat"><!-- {{lastMsg(index)}} -->{{getLastMessage(item).message}}</span>
                             </div>
-                            <span class="user-chat-time">12:00</span>
+                            <span class="user-chat-time"><!-- {{item.messages[item.messages.length-1].date}} --> {{getLastMessage(item).date}}</span>
                         </div>
                     </template>
                 </div>
@@ -66,10 +68,10 @@
                 <div>
                     <div class="tab-header d-flex justify-content-between my-p">
                         <div class="d-flex align-items-center">
-                            <div class="profile-small"><img src="./img/avatar_1.jpg" alt="Michele" class="w-100 rounded-circle"></div>
+                            <div class="profile-small"><img :src="`./img/avatar${contacts[currentChat].avatar}.jpg`" :alt="`${contacts[currentChat].name}`" class="w-100 rounded-circle"></div>
                             <div class="d-flex flex-column px-3">
-                                <span>Michele</span>
-                                <span class="info-chat">Ultimo accesso oggi alle 12.00</span>
+                                <span>{{contacts[currentChat].name}}</span>
+                                <span class="info-chat">Ultimo accesso {{contacts[currentChat].messages[contacts[currentChat].messages.length-1].date}}</span>
                             </div>
                         </div>
                         <div class="d-flex align-items-center gap-4">
@@ -80,27 +82,19 @@
                     </div>
                 </div>
                 <!-- container area chat -->
-                <div class="h-100 p-5 chat-box d-flex flex-column">
-                    <div class="send p-3 my-2 position-relative align-self-end">
-                        <p>Hai portato a spasso il cane?</p>
-                        <span class="msg-chat-time">15:30</span>
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
-                    <div class="send my-2 p-3 position-relative align-self-end">
-                        <p>Ricordati di stendere i panni</p>
-                        <span class="msg-chat-time">15:50</span>
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
-                    <div class="received my-2 p-3 position-relative align-self-start">
-                        <p>Tutto fatto!</p>
-                        <span class="msg-chat-time">16:15</span>
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
+                <div class="h-100 p-5 chat-box d-flex flex-column overflow-auto">
+                    <template v-for="(message, index) in contacts[currentChat].messages">
+                        <div class="p-3 my-2 position-relative" :class="message.status">
+                            <p>{{message.message}}</p>
+                            <span class="msg-chat-time">{{message.date}}</span>
+                            <i class="fa-solid fa-caret-down"></i>
+                        </div>
+                    </template>
                 </div>
                 <!-- footer area chat -->
                 <div class="tab-footer my-p d-flex align-items-center justify-content-between">
                     <i class="fa-regular fa-face-smile fs-3" role="button"></i>
-                    <span class="w-100 px-3"><input type="text" class="w-100 form-control form-control-lg fs-6" placeholder="Scrivi un messaggio"></span>
+                    <span class="w-100 px-3"><input v-model.trim="newMessage" @keyup.enter="sendMessage" type="text" class="w-100 form-control form-control-lg fs-6" placeholder="Scrivi un messaggio"></span>
                     <i class="fa-solid fa-paper-plane fs-3" role="button"></i>
                 </div>
             </div>

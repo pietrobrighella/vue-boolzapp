@@ -3,6 +3,7 @@
     --light-green: #dafdd3;
     --blue-grey: #8796a0;
     --grey: #d7dada;
+    --medium-green: #daded9;
     --medium-grey: #f0f2f5;
     --light-grey: #f6f5f6;
     --light-blue: #53bdeb;
@@ -35,7 +36,7 @@ html {
     height: 100%;
     width: 100%;
     padding: 20px;
-    background-color: var(--blue-grey);
+    background: linear-gradient(var(--green) 20%, var(--medium-green) 20%);
 }
 
 .my-p {
@@ -118,7 +119,8 @@ html {
     position: absolute;
     top: 8px;
     right: 8px;
-    font-size: .8rem;
+    font-size: .7rem;
+    color: rgb(180, 180, 180);
 }
 
 .msg-chat-time {
@@ -139,14 +141,15 @@ html {
     padding: 6px;
 }
 
-.send {
+.sent {
     background-color: var(--light-green);
     min-height: 60px;
     max-width: 45%;
     border-radius: 10px;
+    align-self: flex-end;
 }
 
-.send .fa-caret-down {
+.sent .fa-caret-down {
     position: absolute;
     color: var(--light-green);
     top: -12px;
@@ -159,6 +162,7 @@ html {
     min-height: 60px;
     max-width: 45%;
     border-radius: 10px;
+    align-self: flex-start;
 }
 
 .received .fa-caret-down {

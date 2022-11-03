@@ -4,12 +4,14 @@ const app = createApp({
     data(){
         return {
             currentChat: 0,
+            newMessage: '',
+            searchTerm: '',
             contacts: [
                 {
                     id: 1,
                     name: 'Michele',
                     avatar: '_1',
-                    active: true,
+                    active: false,
                     messages: [
                         {
                             date: '10/01/2020 15:30:55',
@@ -180,25 +182,61 @@ const app = createApp({
     methods: {
         getChat(id){
             this.currentChat = this.contacts.findIndex((item) => {
-                return id === item.id
+                return item.id == id
             })
         },
 
-        lastMsg(i) {
-            lastMsg = this.contacts[i].messages[this.contacts[i].messages.length - 1].message
-            if(lastMsg.length > 30){
-                return lastMsg.slice(0,30) + ' ...';
+        truncMsg(prt) {
+            if(prt.length > 30){
+                return prt.slice(0,30) + ' ...';
             } else {
-                return lastMsg;
+                return prt;
             }
+        },
+
+        getLastMessage(item){
+            const msg = item.messages.filter((message)=>{
+                return message.status === 'received';
+            })
+            return msg[msg.length-1]
+        },
+
+        sendMessage(){
+            if(!this.newMessage) return;
+            const d = new Date();
+            let newDate = d.toDateString();
+            const newSentMessage = {
+                date: newDate,
+                message: this.newMessage,
+                status: 'sent'
+            }
+            this.contacts[this.currentChat].messages.push(newSentMessage);
+            this.newMessage = '';
+           
+            setTimeout(()=>{
+                const d = new Date();
+            let newDate = d.toDateString();
+            const newSentMessage = {
+                date: newDate,
+                message: 'Certo! 😃',
+                status: 'received'
+            }
+            this.contacts[this.currentChat].messages.push(newSentMessage);
+            }, 1000)
         }
     },
-    computed: {
 
+    // proprietà calcolata che si utilizza come un metodo ma è una proprietà. Non posso passargli parametri, deve sempre avere un valore di ritorno e si deve basare su una proprietà dell'oggetto stesso. La filteredContacts va a sostituire il semplice contacts nel for in html perchè si applica il filtro sulla proprietà calcolata di questo metodo che si basa sull'array di contacts che cambia.
+    computed: {
+        filteredContacts(){
+            return this.contacts.filter((item)=>{
+                const name = item.name.toLowerCase();
+                return name.includes(this.searchTerm.toLowerCase());
+            })
+        }
     },
     mounted(){
-        console.log(this.contacts[0].messages)
-        console.log(this.currentChat)
+
     },
 });
 
